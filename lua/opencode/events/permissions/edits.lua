@@ -21,16 +21,16 @@ function M.diff(event)
 
     -- Opencode sends the absolute path sometimes with the HOME and sometimes without
     -- It has something to do with the path of the opencode server cwd wrt the file/directory
-    if vim.fn.filereadable(absolute_filepath) == 1 then
+    if vim.fn.isdirectory(vim.fs.dirname(absolute_filepath)) == 1 then
       filepath = absolute_filepath
     elseif vim.env.HOME and vim.env.HOME ~= "" then
       local home_filepath = vim.fs.normalize(vim.fs.joinpath(vim.env.HOME, filepath))
-      if vim.fn.filereadable(home_filepath) == 1 then
+      if vim.fn.isdirectory(vim.fs.dirname(home_filepath)) == 1 then
         filepath = home_filepath
       end
     end
 
-    if vim.fn.filereadable(filepath) ~= 1 then
+    if vim.fn.isdirectory(vim.fs.dirname(filepath)) ~= 1 then
       return Promise.reject("Cannot resolve OpenCode edit target file: " .. filepath)
     end
 
